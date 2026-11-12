@@ -217,6 +217,16 @@ body.show-auth .auth{display:flex}
 .acct i{position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg);background:var(--ok)}
 .acct.guest{width:auto;border-radius:99px;padding:0 12px;font-family:var(--body);font-size:.85rem;color:#fff;background:var(--accent);border-color:var(--accent)}
 .acct.guest i{display:none}
+/* Larger screens: wider column, everything scaled up, dialogs centered */
+@media (min-width:1000px){
+  .app{max-width:800px}
+  .lhead{max-width:840px}
+  .qwrap,.lfoot .in{max-width:800px}
+  .sheet{align-items:center;padding:24px}
+  .sheet .card{max-width:640px;border-radius:22px}
+}
+@media (min-width:1280px){ body{zoom:1.15} }
+@media (min-width:1700px){ body{zoom:1.3} }
 .acct i.saving{background:var(--gold)}.acct i.err{background:var(--bad)}
 @media (max-width:400px){.stats{gap:9px}.brand small{display:none}}
 </style>
