@@ -195,10 +195,10 @@ table.payoff td{font-variant-numeric:tabular-nums;background:var(--surface)}
 .shake{animation:shake .3s}
 
 /* Accounts */
-body:not(.authed) .app{display:none!important}
-body.authed .auth{display:none}
-.auth{min-height:100%;display:flex;align-items:center;justify-content:center;padding:32px 16px}
-.acard{width:100%;max-width:400px;background:var(--surface);border:2px solid var(--line);border-bottom-width:5px;border-radius:22px;padding:26px 22px}
+.auth{position:fixed;inset:0;z-index:50;background:rgba(10,14,22,.55);display:none;align-items:center;justify-content:center;padding:24px 16px;overflow:auto}
+body.show-auth .auth{display:flex}
+.aclose{position:absolute;top:10px;right:10px}
+.acard{position:relative;margin:auto;width:100%;max-width:400px;background:var(--surface);border:2px solid var(--line);border-bottom-width:5px;border-radius:22px;padding:26px 22px}
 .acard .brand{font-size:2.1rem;text-align:center}
 .acard .brand small{display:block;margin:0;font-size:.85rem}
 .atag{text-align:center;color:var(--muted);font-weight:700;margin:6px 0 18px}
@@ -215,15 +215,18 @@ body.authed .auth{display:none}
 .alinks button[hidden]{display:none}
 .acct{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:var(--accent);font-family:var(--display);font-weight:800;font-size:1rem;display:grid;place-items:center;position:relative;padding:0;flex:none}
 .acct i{position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg);background:var(--ok)}
+.acct.guest{width:auto;border-radius:99px;padding:0 12px;font-family:var(--body);font-size:.85rem;color:#fff;background:var(--accent);border-color:var(--accent)}
+.acct.guest i{display:none}
 .acct i.saving{background:var(--gold)}.acct i.err{background:var(--bad)}
 @media (max-width:400px){.stats{gap:9px}.brand small{display:none}}
 </style>
 </head>
 <body>
 <div class="auth" id="auth">
-  <form class="acard" id="aform" novalidate>
+  <form class="acard pop" id="aform" novalidate role="dialog" aria-modal="true" aria-label="Log in">
+    <button type="button" class="x aclose" id="aClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="24" height="24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     <div class="brand">MikroSti<small>SE-213 Microeconomics</small></div>
-    <p class="atag" id="atag">Log in to keep your progress on every device.</p>
+    <p class="atag" id="atag">Log in to save your progress and continue on any device.</p>
     <div class="atabs" id="atabs" role="tablist">
       <button type="button" class="tab" role="tab" data-mode="login" aria-selected="true">Log in</button>
       <button type="button" class="tab" role="tab" data-mode="signup" aria-selected="false">Create account</button>
@@ -243,7 +246,7 @@ body.authed .auth{display:none}
       <span class="stat streak" title="Day streak"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3.5 5 5.6 5 10.5A5 5 0 0 1 7 13c0-2 1-3.4 2-4.3.2 1.6 1 2.6 2 3C11 9 10.8 5.6 12 2z"/></svg><span id="sStreak">0</span></span>
       <span class="stat xp" title="Experience points"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="sXp">0</span></span>
       <span class="stat mist" title="Questions in your mistake bank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><span id="sMist">0</span></span>
-      <button class="acct" id="acct" aria-label="Account and sync">?<i id="syncDot"></i></button>
+      <button class="acct guest" id="acct" aria-label="Log in to save progress">Log in<i id="syncDot"></i></button>
     </div>
   </header>
   <nav class="tabs" role="tablist">
@@ -1462,7 +1465,13 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const configured=/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(CFG.supabaseUrl||'') && CFG.supabaseAnonKey && !/^YOUR/.test(CFG.supabaseAnonKey);
 const recovering=/type=recovery/.test(location.hash);
-let sb=null, user=null, started=false, mode='login';
+let sb=null, user=null, started=false, guest=false, mode='login';
+function openAuth(m){ setMode(m||'login'); document.body.classList.add('show-auth'); setTimeout(()=>{ const f=m==='reset'?$('aPass'):$('aEmail'); f&&f.focus(); },30); }
+function closeAuth(){ document.body.classList.remove('show-auth'); }
+function startGuest(){ if(started) return; started=true; guest=true; window.startMikroApp(); }
+$('aClose').onclick=()=>{ closeAuth(); if(mode==='reset'||mode==='retry') location.reload(); };
+$('auth').addEventListener('click',e=>{ if(e.target.id==='auth' && mode!=='reset') closeAuth(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && document.body.classList.contains('show-auth') && mode!=='reset'){ e.stopImmediatePropagation(); closeAuth(); } },true);
 let pending=null, saving=false, timer=null, lastRemote=null, status='ok';
 
 function msg(t,kind){ const m=$('amsg'); m.textContent=t||''; m.className='amsg'+(kind?' '+kind:''); }
@@ -1478,7 +1487,7 @@ function setMode(m){
   $('aPass').autocomplete=(m==='signup'||m==='reset')?'new-password':'current-password';
   $('aForgot').hidden=m!=='login';
   $('aBack').hidden=!(m==='forgot'||m==='reset');
-  $('atag').textContent={login:'Log in to keep your progress on every device.',signup:'Create a free account. Your progress is saved to it.',forgot:'Enter your email and we’ll send you a link to choose a new password.',reset:'Choose a new password for your account.'}[m];
+  $('atag').textContent={login:'Log in to save your progress and continue on any device.',signup:'Create a free account. The progress you already have here comes with you.',forgot:'Enter your email and we’ll send you a link to choose a new password.',reset:'Choose a new password for your account.'}[m];
   busy(false,LABEL[m]);
 }
 $('atabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>setMode(t.dataset.mode));
@@ -1499,7 +1508,7 @@ function niceError(e){
 $('aform').addEventListener('submit',async e=>{
   e.preventDefault();
   if(!sb) return;
-  if(mode==='retry') return enter(user);
+  if(mode==='retry') return location.reload();
   const email=$('aEmail').value.trim(), pass=$('aPass').value, name=$('aName').value.trim();
   if(mode!=='reset' && !/^\S+@\S+\.\S+$/.test(email)) return msg('Enter a valid email address.','err');
   if(mode!=='forgot' && pass.length<6) return msg('The password must be at least 6 characters.','err');
@@ -1517,8 +1526,8 @@ $('aform').addEventListener('submit',async e=>{
       const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:back}); if(error) throw error;
       msg('If that email has an account, a reset link is on its way.','ok'); busy(false,LABEL[mode]); return;
     } else if(mode==='reset'){
-      const {data,error}=await sb.auth.updateUser({password:pass}); if(error) throw error;
-      enter(data.user); return;
+      const {error}=await sb.auth.updateUser({password:pass}); if(error) throw error;
+      location.replace(location.pathname); return;
     }
   }catch(err){ msg(niceError(err),'err'); busy(false,LABEL[mode]); }
 });
@@ -1536,7 +1545,7 @@ async function enter(u){
   let remote;
   try{ remote=await fetchRemote(); }
   catch(err){
-    started=false; console.error(err);
+    console.error(err); user=null; started=false; startGuest(); openAuth('login');
     msg(/relation|does not exist|schema cache/i.test(err.message||'')?'The database table is missing. Run supabase/schema.sql in the Supabase SQL editor.':niceError(err),'err');
     mode='retry'; busy(false,'Try again');
     ['atabs','fName','fEmail','fPass','aForgot','aBack'].forEach(id=>$(id).hidden=true);
@@ -1549,7 +1558,7 @@ async function enter(u){
   if(!initial && legacy) initial=legacy;                       // progress from before accounts existed
   lastRemote=remote?remote.updated_at:null;
   window.MIKRO_UID=u.id; window.MIKRO_INITIAL=initial;
-  document.body.classList.add('authed');
+  document.body.classList.add('authed'); closeAuth(); $('acct').classList.remove('guest'); $('acct').setAttribute('aria-label','Account and sync');
   const nm=(u.user_metadata&&u.user_metadata.display_name)||u.email||'?';
   $('acct').firstChild.textContent=nm.trim().charAt(0).toUpperCase();
   if(history.replaceState && /access_token|type=/.test(location.hash)) history.replaceState(null,'',location.pathname);
@@ -1587,6 +1596,7 @@ window.addEventListener('pagehide',()=>flush());
 
 // --- Account sheet ---
 $('acct').addEventListener('click',()=>{
+  if(!user){ openAuth('login'); return; }
   const ov=$('overlay'); const nm=(user.user_metadata&&user.user_metadata.display_name)||'';
   ov.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="actitle"><div class="card pop">
     <div class="row"><div><div class="qtag">Account</div><h2 id="actitle">${esc(nm||user.email)}</h2></div><button class="x" id="acclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="26" height="26"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
@@ -1599,18 +1609,20 @@ $('acct').addEventListener('click',()=>{
   $('aclogout').onclick=async()=>{ $('aclogout').disabled=true; $('aclogout').textContent='Saving and logging out …'; await flush(); await sb.auth.signOut(); location.reload(); };
 });
 
-// --- Start ---
-if(!configured || !window.supabase){
-  busy(true,'Not set up yet');
-  msg(!window.supabase?'Could not load the login library. Check your connection and reload.':'Supabase isn’t configured. Paste your project URL and anon key into MIKRO_CONFIG at the top of index.html.','err');
-  return;
-}
+// --- Start: everyone gets the app right away; logging in is optional ---
+if(!configured || !window.supabase){ $('acct').hidden=true; startGuest(); return; }
 sb=window.supabase.createClient(CFG.supabaseUrl.replace(/\/$/,''),CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-setMode(recovering?'reset':'login');
+let booted=false;
 sb.auth.onAuthStateChange((event,session)=>{
-  if(event==='PASSWORD_RECOVERY'){ setMode('reset'); return; }
-  if(event==='SIGNED_OUT' && started){ location.reload(); return; }
-  if(session && !started && mode!=='reset' && (event==='INITIAL_SESSION'||event==='SIGNED_IN')) setTimeout(()=>enter(session.user),0);
+  if(event==='PASSWORD_RECOVERY'){ openAuth('reset'); return; }
+  if(event==='INITIAL_SESSION' && !booted){
+    booted=true;
+    if(recovering){ startGuest(); openAuth('reset'); return; }
+    if(session) setTimeout(()=>enter(session.user),0); else startGuest();
+    return;
+  }
+  if(event==='SIGNED_IN' && guest && mode!=='reset'){ location.replace(location.pathname); return; } // just logged in: reload into the account
+  if(event==='SIGNED_OUT' && user){ location.reload(); }
 });
 })();
 </script>
