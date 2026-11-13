@@ -1158,6 +1158,15 @@ return G;
 })();
 
 </script>
+<script src="questions-2.js"></script>
+<script src="questions-3.js"></script>
+<script src="questions-4.js"></script>
+<script src="gen-2.js"></script>
+<script src="gen-3.js"></script>
+<script>
+// Add the extra questions to the end of each unit (existing question ids and progress stay the same)
+(function(){ const M=window.MORE_QS||{}; UNITS.forEach(u=>(M[u.id]||[]).forEach(q=>u.qs.push(q))); })();
+</script>
 <script>
 // Main app. Started by the account script once the user is logged in and progress is loaded.
 window.startMikroApp=function(){
@@ -1342,7 +1351,7 @@ function viewExam(el){
     <p style="margin-top:12px;color:var(--ink);font-weight:700">Choose topics:</p>
     <div class="chips">${UNITS.map((u,i)=>`<button class="chip" aria-pressed="${examSel.has(i)}" data-u="${i}">${u.title}</button>`).join('')}</div>
     <button class="btn" id="examGo">Start practice exam</button></div>
-    <div class="panel"><h2>Past exam questions only</h2><p>Questions marked “Exam” are based on SE-213 exams from fall 2021, 2022, 2023 and 2025. You get 12 of them in random order.</p><button class="btn ghost" id="exOnly">Practice exam questions</button></div>`;
+    <div class="panel"><h2>Past exam questions only</h2><p>Questions marked “Exam” are based on SE-213 exams from fall 2021, 2022, 2023, 2024 and 2025. You get 12 of them in random order.</p><button class="btn ghost" id="exOnly">Practice exam questions</button></div>`;
   el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
     const i=+c.dataset.u; examSel.has(i)?examSel.delete(i):examSel.add(i);
     c.setAttribute('aria-pressed',examSel.has(i));
