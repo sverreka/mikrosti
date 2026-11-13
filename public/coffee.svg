@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Kaffekopp">
+  <style>
+    .steam{fill:none;stroke:#c9d3ea;stroke-width:7;stroke-linecap:round;opacity:0;animation:rise 2.4s ease-in-out infinite}
+    .s2{animation-delay:.8s}.s3{animation-delay:1.6s}
+    @keyframes rise{0%{opacity:0;transform:translateY(10px)}30%{opacity:.9}100%{opacity:0;transform:translateY(-18px)}}
+    .cup{animation:bob 2.4s ease-in-out infinite;transform-origin:100px 170px}
+    @keyframes bob{0%,100%{transform:rotate(0)}50%{transform:rotate(-2deg)}}
+    @media (prefers-reduced-motion:reduce){.steam,.cup{animation:none}.steam{opacity:.8}}
+  </style>
+  <!-- steam -->
+  <path class="steam s1" d="M78 62c-8-10 8-16 0-28"/>
+  <path class="steam s2" d="M100 58c-8-10 8-16 0-28"/>
+  <path class="steam s3" d="M122 62c-8-10 8-16 0-28"/>
+  <g class="cup">
+    <!-- saucer -->
+    <ellipse cx="100" cy="172" rx="70" ry="13" fill="#1f43a8"/>
+    <ellipse cx="100" cy="167" rx="70" ry="13" fill="#2f5bd8"/>
+    <!-- handle -->
+    <path d="M146 100c22-4 32 8 28 24s-20 22-38 18" fill="none" stroke="#e8933a" stroke-width="13" stroke-linecap="round"/>
+    <!-- cup body -->
+    <path d="M44 82h112l-10 66a20 20 0 0 1-20 18H74a20 20 0 0 1-20-18z" fill="#f0a500"/>
+    <path d="M44 82h112l-2 14H46z" fill="#ffc23d"/>
+    <path d="M135 98l-8 54a12 12 0 0 1-6 8" fill="none" stroke="#d98a00" stroke-width="6" stroke-linecap="round"/>
+    <!-- coffee -->
+    <ellipse cx="100" cy="82" rx="56" ry="12" fill="#ffd36b"/>
+    <ellipse cx="100" cy="83" rx="48" ry="8" fill="#6b3a1f"/>
+    <ellipse cx="92" cy="81" rx="14" ry="3" fill="#8a5131"/>
+    <!-- face -->
+    <circle cx="82" cy="118" r="6" fill="#1d2433"/>
+    <circle cx="118" cy="118" r="6" fill="#1d2433"/>
+    <circle cx="84" cy="116" r="2" fill="#fff"/>
+    <circle cx="120" cy="116" r="2" fill="#fff"/>
+    <path d="M90 130q10 10 20 0" fill="none" stroke="#1d2433" stroke-width="4.5" stroke-linecap="round"/>
+    <ellipse cx="70" cy="131" rx="7" ry="4" fill="#ff7a6b" opacity=".6"/>
+    <ellipse cx="130" cy="131" rx="7" ry="4" fill="#ff7a6b" opacity=".6"/>
+    <!-- shine -->
+    <path d="M58 98l5 40" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+  </g>
+</svg>

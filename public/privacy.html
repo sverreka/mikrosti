@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · MikroSti</title>
+<meta name="description" content="How MikroSti handles your data.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5fa;--surface:#fff;--ink:#1d2433;--muted:#667085;--line:#dfe3ec;--accent:#2f5bd8;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11151d;--surface:#1a202b;--ink:#e8ecf4;--muted:#98a2b6;--line:#2b3342;--accent:#6b8cff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11151d;--surface:#1a202b;--ink:#e8ecf4;--muted:#98a2b6;--line:#2b3342;--accent:#6b8cff;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;font-size:17px;line-height:1.6}
+main{max-width:720px;margin:0 auto;padding:28px 16px 64px}
+a{color:var(--accent);font-weight:700}
+.back{display:inline-block;margin-bottom:18px;text-decoration:none}
+h1,h2{font-family:'Baloo 2','Trebuchet MS',system-ui,sans-serif;line-height:1.15;margin:0}
+h1{font-size:2.2rem;color:var(--accent)}
+h2{font-size:1.3rem;margin:28px 0 6px}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:22px 22px 10px;margin-top:16px}
+.muted{color:var(--muted)}
+ul{padding-left:20px}li{margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:8px 0}
+td,th{border-top:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="./">← Back to MikroSti</a>
+  <h1>Privacy</h1>
+  <p class="muted">Last updated 13 November 2026</p>
+
+  <div class="card">
+    <p><b>Short version:</b> You can use MikroSti without an account, and then nothing about you is stored anywhere except in your own browser. If you create an account, we store your email, the name you chose and your progress so you can continue on other devices. We never sell data, show ads or use tracking cookies. You can delete your account and all its data yourself at any time.</p>
+
+    <h2>Who is responsible</h2>
+    <p>MikroSti is run by <b>Sverre Kaldestad</b>, who is the data controller. Questions or requests: <a href="mailto:sverrekaldestad12@gmail.com">sverrekaldestad12@gmail.com</a>.</p>
+
+    <h2>What we store and why</h2>
+    <table>
+      <tr><th>Data</th><th>Why</th><th>Legal basis</th></tr>
+      <tr><td>Email address and password (the password is stored encrypted by Supabase, we can't see it)</td><td>To log you in</td><td>Needed to provide the account you asked for</td></tr>
+      <tr><td>The name you enter when you sign up</td><td>Shown in your account menu</td><td>Needed to provide the account</td></tr>
+      <tr><td>Progress: XP, streak, lesson levels, mistakes, best exam score, exam date</td><td>So your progress follows you between devices</td><td>Needed to provide the account</td></tr>
+      <tr><td>Leaderboard nickname and this week’s XP (only if you join the leaderboard)</td><td>Shown publicly on the weekly leaderboard</td><td>Your consent. Leave the leaderboard at any time and your entry is deleted</td></tr>
+      <tr><td>Problem reports you send about a question (and your account ID if you are logged in)</td><td>To fix mistakes in the questions</td><td>Legitimate interest in correct content</td></tr>
+    </table>
+    <p>If you log in with Google, we receive your email address and name from Google. Nothing else.</p>
+
+    <h2>Without an account</h2>
+    <p>Your progress is saved only in your browser’s local storage on your device. It is never sent to us. Clearing your browser data deletes it.</p>
+
+    <h2>Who processes the data</h2>
+    <ul>
+      <li><b>Supabase</b> stores accounts, progress, the leaderboard and reports.</li>
+      <li><b>GitHub Pages</b> hosts the website. Like any web host, it sees your IP address when you load the page and may keep it in logs for security.</li>
+      <li><b>Google Fonts</b> and <b>jsDelivr</b> deliver the fonts and the login library, so they also see your IP address when the page loads.</li>
+      <li><b>Google</b> handles the login if you choose “Continue with Google”.</li>
+    </ul>
+    <p>Some of these companies are based in the USA. Transfers rely on the EU–US Data Privacy Framework or standard contractual clauses.</p>
+
+    <h2>Cookies and local storage</h2>
+    <p>We use no tracking or advertising cookies. The site uses your browser’s local storage to keep you logged in and to save progress. This is strictly necessary for the site to work, so no cookie banner is needed.</p>
+
+    <h2>How long we keep it</h2>
+    <p>Account data is kept until you delete your account. Leaderboard entries are deleted when you leave the leaderboard or delete your account. Problem reports are deleted once the problem is handled, and at the latest after 12 months.</p>
+
+    <h2>Your rights</h2>
+    <ul>
+      <li><b>Delete everything:</b> log in, click your initial in the top right corner, and choose “Delete account”. Your account, progress and leaderboard entry are deleted right away.</li>
+      <li><b>Access, correction or a copy of your data:</b> email us and we will reply within 30 days.</li>
+      <li><b>Complain:</b> you can complain to the Norwegian Data Protection Authority (<a href="https://www.datatilsynet.no" rel="noopener">Datatilsynet</a>).</li>
+    </ul>
+  </div>
+</main>
+</body>
+</html>

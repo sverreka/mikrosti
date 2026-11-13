@@ -4,12 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MikroSti SE-213</title>
+<meta name="description" content="Practice SE-213 Microeconomics the fun way: short lessons, exam practice with past exam questions, a mistake bank and every formula. Free.">
+<meta name="theme-color" content="#2f5bd8">
+<link rel="canonical" href="https://xn--kad-zna.no/">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="MikroSti">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MikroSti">
+<meta property="og:title" content="MikroSti: SE-213 Microeconomics practice">
+<meta property="og:description" content="Short lessons, exam practice, a mistake bank and every formula. Free.">
+<meta property="og:url" content="https://xn--kad-zna.no/">
+<meta property="og:image" content="https://xn--kad-zna.no/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <script>
 // ===== Supabase settings: paste your values from Supabase → Project Settings → API =====
 // The anon (public) key is safe to have here. NEVER put the service_role key in this file.
 window.MIKRO_CONFIG = {
   supabaseUrl: 'https://pnjtryajarpitojzpkzd.supabase.co',
-  supabaseAnonKey: 'sb_publishable_wsyQPlcFKngPTvcNZXczbg_VhQZKNNh'
+  supabaseAnonKey: 'sb_publishable_wsyQPlcFKngPTvcNZXczbg_VhQZKNNh',
+  // Set to true once Google is set up in Supabase → Authentication → Sign In / Providers → Google
+  googleLogin: false
 };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -54,8 +73,8 @@ sub,sup{line-height:0}
 .stat svg{width:22px;height:22px}
 .stat.streak{color:#f07a1a}.stat.xp{color:var(--gold)}.stat.mist{color:var(--bad)}
 
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0 6px}
-@media (max-width:520px){.tabs{grid-template-columns:1fr 1fr}}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 0 6px}
+@media (max-width:620px){.tabs{grid-template-columns:repeat(6,1fr)}.tabs .tab{grid-column:span 2}.tabs .tab:nth-child(n+4){grid-column:span 3}.tabs .tab{font-size:.84rem;padding:8px 4px}}
 .tab{min-width:0;border:2px solid var(--line);background:var(--surface);color:var(--muted);border-radius:14px;padding:9px 10px;font-weight:800;font-size:.92rem;border-bottom-width:4px}
 .tab[aria-selected="true"]{color:var(--accent);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
 
@@ -227,6 +246,32 @@ body.show-auth .auth{display:flex}
 }
 @media (min-width:1280px){ body{zoom:1.15} }
 @media (min-width:1700px){ body{zoom:1.3} }
+.foot{display:flex;justify-content:center;gap:18px;margin:40px 0 0;font-size:.85rem;font-weight:700}
+.foot a,.foot button{color:var(--muted);background:none;border:none;padding:0;font:inherit;text-decoration:underline;text-underline-offset:3px}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;text-transform:none;letter-spacing:0}
+.aor{display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:700;font-size:.82rem;margin:16px 0 12px}
+.aor::before,.aor::after{content:'';flex:1;height:2px;background:var(--line)}
+.apriv{text-align:center;color:var(--muted);font-size:.8rem;margin:10px 0 0}.apriv a{color:var(--muted)}
+.exam{display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin:12px 0}
+.exam svg{width:30px;height:30px;flex:none;color:var(--accent)}
+.exam .tx{flex:1;min-width:0}.exam b{font-family:var(--display);font-size:1.05rem;display:block;line-height:1.2}
+.exam small{color:var(--muted);font-weight:700;font-size:.85rem}
+.exam input{font:inherit;font-weight:700;padding:6px 8px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);margin-top:4px;max-width:100%}
+.link{background:none;border:none;color:var(--accent);font-weight:800;font-size:.85rem;padding:4px;white-space:nowrap}
+.rep{margin-top:8px;background:none;border:none;color:var(--muted);font-weight:700;font-size:.82rem;text-decoration:underline;text-underline-offset:3px;padding:2px 0}
+.rchips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.rtext{width:100%;min-height:90px;font:inherit;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical}
+.board{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px;counter-reset:rk}
+.board li{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:var(--bg);font-weight:800}
+.board li .rk{font-family:var(--display);font-size:1.1rem;color:var(--muted);text-align:center}
+.board li:nth-child(1) .rk{color:var(--gold)}.board li:nth-child(2) .rk{color:#9aa4b5}.board li:nth-child(3) .rk{color:#c0773a}
+.board li.me{background:color-mix(in srgb,var(--accent) 14%,var(--surface));outline:2px solid var(--accent)}
+.board li .xp{color:var(--gold);font-variant-numeric:tabular-nums}
+.board li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbjoin{display:flex;gap:8px;margin-top:10px}
+.lbjoin input{flex:1;min-width:0;font:inherit;font-weight:700;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.lbjoin .btn{width:auto;margin:0}
+.danger{background:var(--bad)!important;box-shadow:0 4px 0 color-mix(in srgb,var(--bad) 70%,#000)!important;color:#fff!important;border:none!important}
 .acct i.saving{background:var(--gold)}.acct i.err{background:var(--bad)}
 @media (max-width:400px){.stats{gap:9px}.brand small{display:none}}
 </style>
@@ -241,12 +286,14 @@ body.show-auth .auth{display:flex}
       <button type="button" class="tab" role="tab" data-mode="login" aria-selected="true">Log in</button>
       <button type="button" class="tab" role="tab" data-mode="signup" aria-selected="false">Create account</button>
     </div>
+    <div id="gWrap" hidden><button type="button" class="btn ghost gbtn" id="aGoogle"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h6a5.1 5.1 0 0 1-2.2 3.4v2.8h3.6c2-1.9 3.2-4.7 3.2-8.2z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.4-2.7l-3.6-2.8c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.7H2v2.9A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 13.9a6.6 6.6 0 0 1 0-4.2V6.8H2a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2 6.8l3.7 2.9C6.6 7.3 9.1 5.4 12 5.4z"/></svg>Continue with Google</button><div class="aor"><span>or with email</span></div></div>
     <div class="afield" id="fName" hidden><label for="aName">Name</label><input id="aName" autocomplete="name" maxlength="60"></div>
     <div class="afield" id="fEmail"><label for="aEmail">Email</label><input id="aEmail" type="email" autocomplete="email" required></div>
     <div class="afield" id="fPass"><label for="aPass">Password</label><input id="aPass" type="password" autocomplete="current-password" minlength="6" required></div>
     <p class="amsg" id="amsg" role="status"></p>
     <button class="btn" id="abtn" type="submit">Log in</button>
     <div class="alinks"><button type="button" id="aForgot">Forgot password?</button><button type="button" id="aBack" hidden>Back to log in</button></div>
+    <p class="apriv">By creating an account you accept the <a href="privacy.html">privacy policy</a>.</p>
   </form>
 </div>
 <div class="app" id="app">
@@ -264,10 +311,13 @@ body.show-auth .auth{display:flex}
     <button class="tab" role="tab" id="tab-eksamen" aria-selected="false" data-view="eksamen">Exam practice</button>
     <button class="tab" role="tab" id="tab-feil" aria-selected="false" data-view="feil">Mistakes</button>
     <button class="tab" role="tab" id="tab-formler" aria-selected="false" data-view="formler">Formulas</button>
+    <button class="tab" role="tab" id="tab-board" aria-selected="false" data-view="board">Leaderboard</button>
   </nav>
   <main id="view"></main>
+  <footer class="foot"><a href="privacy.html">Privacy</a><button type="button" id="installBtn" hidden>Install app</button></footer>
 </div>
 <div id="overlay"></div>
+<div id="modal"></div>
 
 <script>
 // Question bank SE-213 Microeconomics (Perloff, ch. 1–11 and 13–14)
@@ -1148,8 +1198,11 @@ function dayDiff(a,b){return Math.round((new Date(b)-new Date(a))/864e5);}
 function normDay(){ if(S.day!==today()){S.day=today();S.dayXp=0;} }
 normDay();
 if(S.last && dayDiff(S.last,today())>1){S.streak=0;}
+function isoWeek(d){d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const y=d.getUTCFullYear();const w=Math.ceil(((d-Date.UTC(y,0,1))/864e5+1)/7);return y+'-W'+String(w).padStart(2,'0');}
+function weekXp(){ return S.wk===isoWeek(new Date())?(S.wkXp||0):0; }
 function addXp(n){
   normDay(); S.xp+=n; S.dayXp+=n;
+  const wk=isoWeek(new Date()); if(S.wk!==wk){S.wk=wk;S.wkXp=0;} S.wkXp+=n;
   const t=today();
   if(S.last!==t){ S.streak = (S.last && dayDiff(S.last,t)===1)? S.streak+1 : 1; S.last=t; }
   save(); hud();
@@ -1174,7 +1227,7 @@ function show(v){
   currentView=v;
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
   const el=document.getElementById('view');
-  ({sti:viewPath,eksamen:viewExam,feil:viewWrong,formler:viewFormulas})[v](el);
+  ({sti:viewPath,eksamen:viewExam,feil:viewWrong,formler:viewFormulas,board:viewBoard})[v](el);
   if(location.hash.slice(1)!==v){try{history.replaceState(null,'','#'+v);}catch(e){}}
 }
 
@@ -1211,7 +1264,7 @@ function ringStyle(lv){return `--p:${lv/MAXLVL*100}%`;}
 function viewPath(el){
   normDay();
   const pct=Math.min(100,Math.round(S.dayXp/GOAL*100));
-  let h=`<div class="goal"><b>Daily goal</b><div class="bar"><i style="width:${pct}%"></i></div><span>${S.dayXp}/${GOAL} XP</span></div>`;
+  let h=`<div class="goal"><b>Daily goal</b><div class="bar"><i style="width:${pct}%"></i></div><span>${S.dayXp}/${GOAL} XP</span></div>`+examPanel();
   const offs=[0,48,70,48,0,-48,-70,-48];
   UNITS.forEach((u,ui)=>{
     const sum=u.lessons.reduce((t,_,li)=>t+lvl(lessonKey(ui,li)),0), mastered=u.lessons.filter((_,li)=>lvl(lessonKey(ui,li))>=MAXLVL).length;
@@ -1241,6 +1294,7 @@ function viewPath(el){
     startLesson({title:u.title+' · Mastery test',build:()=>bossSet(ui),key:bossKey(ui),mode:'lesson',boss:true,color:'var(--gold)'});
   }));
   el.querySelectorAll('[data-guide]').forEach(b=>b.addEventListener('click',()=>openGuide(+b.dataset.guide)));
+  bindExam(el);
 }
 
 function openLessonSheet(ui,li){
@@ -1402,8 +1456,9 @@ function check(){
   document.getElementById('lfi').innerHTML=`<div class="fb" role="status"><h3>${ok?ICON.ok+praise[Math.floor(Math.random()*praise.length)]:ICON.no+'Not quite'}</h3>
     ${ok?`<p>${q.e}</p>${steps.length?`<button class="more" id="more" aria-expanded="false">Show full solution</button><div id="solbox" hidden>${sol}</div>`:''}`
        :`<div class="cmp"><div><span>Your answer</span>${yourTxt}</div><div><span>Correct answer</span>${ansTxt}</div></div>${steps.length?sol:`<p>${q.e}</p>`}`}
-    </div><button class="btn" id="cont">${ok?'Continue':'Got it, continue'}</button>`;
+    <button class="rep" id="repq" type="button">Something wrong with this question? Report it</button></div><button class="btn" id="cont">${ok?'Continue':'Got it, continue'}</button>`;
   const m=document.getElementById('more'); if(m) m.onclick=()=>{const b=document.getElementById('solbox');b.hidden=!b.hidden;m.setAttribute('aria-expanded',!b.hidden);m.textContent=b.hidden?'Show full solution':'Hide solution';};
+  document.getElementById('repq').onclick=()=>openReport(q);
   const c=document.getElementById('cont'); c.onclick=next; c.focus();
 }
 function next(){
@@ -1452,18 +1507,111 @@ function finish(passed){
   document.getElementById('rdone').focus();
 }
 
+// ---------- Exam countdown ----------
+const CAL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+function remainingWork(){ let n=0; UNITS.forEach((u,ui)=>{ u.lessons.forEach((_,li)=>{ if(lvl(lessonKey(ui,li))<1) n++; }); if(!S.done[bossKey(ui)]) n++; }); return n; }
+let editExam=false;
+function examPanel(){
+  if(!S.examDate || editExam){
+    return `<div class="exam">${CAL}<div class="tx"><b>When is your exam?</b><small>Set the date to get a countdown and a daily plan.</small><br><label for="exDate" style="position:absolute;left:-9999px">Exam date</label><input type="date" id="exDate" min="${today()}" value="${S.examDate||''}"></div><button class="link" id="exSave">Save</button></div>`;
+  }
+  const days=dayDiff(today(),S.examDate), left=remainingWork();
+  const nice=new Date(S.examDate+'T12:00').toLocaleDateString('en-GB',{day:'numeric',month:'long'});
+  let head, sub;
+  if(days<0){ head='Your exam date has passed'; sub='Set a new date for your next exam.'; }
+  else if(days===0){ head='Exam day! Good luck'; sub='You’ve got this. Skim the formulas one last time.'; }
+  else {
+    head=`${days} day${days===1?'':'s'} until the exam`;
+    sub= left===0 ? `${nice} · Everything is done. Keep doing practice exams.` : `${nice} · About ${Math.ceil(left/days)} lesson${Math.ceil(left/days)===1?'':'s'} a day to finish everything (${left} left)`;
+  }
+  return `<div class="exam">${CAL}<div class="tx"><b>${head}</b><small>${sub}</small></div><button class="link" id="exEdit">Change</button></div>`;
+}
+function bindExam(el){
+  const sv=el.querySelector('#exSave'), ed=el.querySelector('#exEdit');
+  if(sv) sv.onclick=()=>{ const v=el.querySelector('#exDate').value; if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){el.querySelector('#exDate').focus();return;} S.examDate=v; editExam=false; save(); show('sti'); };
+  if(ed) ed.onclick=()=>{ editExam=true; show('sti'); setTimeout(()=>{const i=document.getElementById('exDate'); i&&i.focus();},30); };
+}
+
+// ---------- Report a problem ----------
+function stripHtml(h){ const t=document.createElement('div'); t.innerHTML=String(h).replace(/<sub>(.*?)<\/sub>/g,'_$1').replace(/<sup>(.*?)<\/sup>/g,'^$1'); return t.textContent.replace(/\s+/g,' ').trim(); }
+function closeModal(){ document.getElementById('modal').innerHTML=''; const c=document.getElementById('cont'); if(c) c.focus(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && document.getElementById('modal').innerHTML){ e.stopImmediatePropagation(); closeModal(); } },true);
+function openReport(q){
+  const cloud=window.MikroCloud||{};
+  const m=document.getElementById('modal');
+  m.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rtitle"><div class="card pop">
+    <div class="row"><div><div class="qtag">Report a problem</div><h2 id="rtitle">What’s wrong?</h2></div><button class="x" id="rclose" aria-label="Close">${ICON.x}</button></div>
+    <div class="rchips">${['The answer is wrong','The question is unclear','Typo or formatting','The solution is wrong'].map(t=>`<button type="button" class="chip" aria-pressed="false">${t}</button>`).join('')}</div>
+    <label for="rmsg" style="font-weight:800;font-size:.85rem">Details (optional)</label>
+    <textarea id="rmsg" class="rtext" maxlength="900" placeholder="E.g. I think the answer should be 40 because …"></textarea>
+    <p class="amsg" id="rstat" role="status"></p>
+    <button class="btn" id="rsend">Send report</button></div></div>`;
+  const chips=[...m.querySelectorAll('.chip')];
+  chips.forEach(c=>c.onclick=()=>c.setAttribute('aria-pressed',c.getAttribute('aria-pressed')!=='true'));
+  m.querySelector('.sheet').addEventListener('click',e=>{ if(e.target.classList.contains('sheet')) closeModal(); });
+  document.getElementById('rclose').onclick=closeModal;
+  document.getElementById('rsend').onclick=async()=>{
+    const picked=chips.filter(c=>c.getAttribute('aria-pressed')==='true').map(c=>c.textContent);
+    const msg=[picked.join(', '),document.getElementById('rmsg').value.trim()].filter(Boolean).join(': ');
+    const st=document.getElementById('rstat'), b=document.getElementById('rsend');
+    if(msg.length<3){ st.className='amsg err'; st.textContent='Pick a reason or write a few words.'; return; }
+    if(!cloud.report){ st.className='amsg err'; st.textContent='Reports only work on the online version of the site.'; return; }
+    b.disabled=true; b.textContent='Sending …';
+    const qt=stripHtml(q.q)+(q.t==='mc'?' | Options: '+q.o.map(stripHtml).join(' / '):'')+' | App answer: '+stripHtml(q.t==='mc'?q.o[q.a]:q.t==='tf'?(q.a?'True':'False'):String(q.a));
+    try{ await cloud.report(q.id, qt.slice(0,1990), msg.slice(0,1000)); st.className='amsg ok'; st.textContent='Thanks! The report has been sent.'; b.textContent='Sent'; setTimeout(closeModal,1200); }
+    catch(err){ st.className='amsg err'; st.textContent='Could not send the report. Try again in a bit.'; b.disabled=false; b.textContent='Send report'; }
+  };
+}
+
+// ---------- Weekly leaderboard ----------
+async function viewBoard(el){
+  const cloud=window.MikroCloud||{}, wk=isoWeek(new Date());
+  el.innerHTML=`<div class="panel"><h2>This week’s leaderboard</h2><p>XP earned this week (${wk.replace('-W',', week ')}). Resets every Monday.</p><div id="lbList"><p class="empty">Loading …</p></div><div id="lbMe"></div></div>`;
+  const list=el.querySelector('#lbList'), me=el.querySelector('#lbMe');
+  if(!cloud.ready){ list.innerHTML='<p class="empty">The leaderboard is only available on the online version of the site.</p>'; return; }
+  const user=cloud.user();
+  // your own status
+  if(!user){
+    me.innerHTML=`<p style="margin-top:14px">You have <b>${weekXp()} XP</b> this week. Log in to join the leaderboard.</p><button class="btn" id="lbLogin">Log in to join</button>`;
+    me.querySelector('#lbLogin').onclick=()=>cloud.login();
+  } else if(!(S.lb&&S.lb.on)){
+    const def=(cloud.displayName()||'').split(/\s+/)[0].slice(0,20);
+    me.innerHTML=`<p style="margin-top:14px;color:var(--ink);font-weight:700">Join with a nickname. Only the nickname and your XP this week are shown.</p>
+      <div class="lbjoin"><label for="lbName" style="position:absolute;left:-9999px">Nickname</label><input id="lbName" maxlength="20" value="${esc(def)}" placeholder="Nickname"><button class="btn" id="lbJoin">Join</button></div><p class="amsg" id="lbStat"></p>`;
+    me.querySelector('#lbJoin').onclick=async()=>{
+      const n=me.querySelector('#lbName').value.trim(), st=me.querySelector('#lbStat');
+      if(n.length<2){ st.className='amsg err'; st.textContent='The nickname needs at least 2 characters.'; return; }
+      S.lb={on:true,name:n}; if(S.wk!==wk){S.wk=wk;S.wkXp=0;} save();
+      try{ await cloud.syncBoard(S); show('board'); }catch(e){ S.lb={on:false}; save(); st.className='amsg err'; st.textContent=/duplicate|unique/i.test(e.message||'')?'That nickname is taken.':'Could not join right now. Try again in a bit.'; }
+    };
+  } else {
+    me.innerHTML=`<p style="margin-top:14px">You’re on the leaderboard as <b>${esc(S.lb.name)}</b> with <b>${weekXp()} XP</b> this week. <button class="link" id="lbLeave">Leave the leaderboard</button></p>`;
+    me.querySelector('#lbLeave').onclick=async()=>{ S.lb={on:false}; save(); try{ await cloud.leaveBoard(); }catch(e){} show('board'); };
+  }
+  try{
+    const rows=await cloud.board(wk);
+    if(currentView!=='board') return;
+    list.innerHTML=rows.length?`<ol class="board">${rows.map((r,i)=>`<li class="${user&&r.user_id===user.id?'me':''}"><span class="rk">${i+1}</span><span class="nm">${esc(r.nickname)}</span><span class="xp">${r.xp} XP</span></li>`).join('')}</ol>`
+      :'<p class="empty">Nobody has earned XP this week yet. Be the first!</p>';
+  }catch(e){ list.innerHTML='<p class="empty">Could not load the leaderboard. Check your connection.</p>'; }
+}
+
 // Keyboard: 1–4 selects, Enter checks/continues
 document.addEventListener('keydown',e=>{
+  if(document.getElementById('modal').innerHTML || document.body.classList.contains('show-auth')) return;
   if(!L) { if(e.key==='Escape') document.getElementById('overlay').innerHTML=''; return; }
   if(e.key==='Escape'){document.getElementById('lx')?.click();return;}
   if(L.state==='ask' && /^[1-4]$/.test(e.key) && document.activeElement?.id!=='numA'){document.getElementById('o'+(+e.key-1))?.click();}
-  if(e.key==='Enter'){e.preventDefault(); if(L.state==='ask') check(); else { const c=document.getElementById('cont'); if(c) c.click(); else document.getElementById('rdone')?.click(); } }
+  if(e.key==='Enter'){e.preventDefault();
+    // One Enter = one step: ignore a held-down key and presses that come too fast after the last one
+    if(e.repeat) return; const now=Date.now(); if(now-(window.__lastEnter||0)<400) return; window.__lastEnter=now;
+    if(L.state==='ask') check(); else { const c=document.getElementById('cont'); if(c) c.click(); else document.getElementById('rdone')?.click(); } }
 });
 
 hud(); save();
 const h0=location.hash.slice(1);
-show(['sti','eksamen','feil','formler'].includes(h0)?h0:'sti');
-window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h!==currentView&&['sti','eksamen','feil','formler'].includes(h))show(h);});
+show(['sti','eksamen','feil','formler','board'].includes(h0)?h0:'sti');
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h!==currentView&&['sti','eksamen','feil','formler','board'].includes(h))show(h);});
 };
 </script>
 <script>
@@ -1491,6 +1639,7 @@ function setMode(m){
   mode=m; msg('');
   $('atabs').hidden=(m==='forgot'||m==='reset');
   $('atabs').querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.mode===m));
+  $('gWrap').hidden=!(CFG.googleLogin && (m==='login'||m==='signup'));
   $('fName').hidden=m!=='signup';
   $('fEmail').hidden=m==='reset';
   $('fPass').hidden=m==='forgot';
@@ -1502,6 +1651,11 @@ function setMode(m){
 }
 $('atabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>setMode(t.dataset.mode));
 $('aForgot').onclick=()=>setMode('forgot');
+$('aGoogle').onclick=async()=>{
+  if(!sb) return; busy(true); msg('');
+  const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});
+  if(error){ msg(niceError(error),'err'); busy(false,LABEL[mode]); }
+};
 $('aBack').onclick=()=>setMode('login');
 
 function niceError(e){
@@ -1569,7 +1723,7 @@ async function enter(u){
   lastRemote=remote?remote.updated_at:null;
   window.MIKRO_UID=u.id; window.MIKRO_INITIAL=initial;
   document.body.classList.add('authed'); closeAuth(); $('acct').classList.remove('guest'); $('acct').setAttribute('aria-label','Account and sync');
-  const nm=(u.user_metadata&&u.user_metadata.display_name)||u.email||'?';
+  const nm=window.MikroCloud.displayName()||'?';
   $('acct').firstChild.textContent=nm.trim().charAt(0).toUpperCase();
   if(history.replaceState && /access_token|type=/.test(location.hash)) history.replaceState(null,'',location.pathname);
   window.startMikroApp();   // calls save() once, which uploads the starting state
@@ -1590,11 +1744,28 @@ async function flush(){
   try{
     const {data,error}=await sb.from('progress').upsert({user_id:user.id,data:body},{onConflict:'user_id'}).select('updated_at').single();
     if(error) throw error;
-    lastRemote=data.updated_at; if(!pending) setStatus('ok');
+    lastRemote=data.updated_at;
+    if(body.lb && body.lb.on) await syncBoard(body);
+    if(!pending) setStatus('ok');
   }catch(err){
     console.warn('Sync failed',err); if(!pending) pending=body; setStatus('err'); timer=setTimeout(flush,6000);
   }finally{ saving=false; if(pending && status!=='err'){ timer=setTimeout(flush,300); } }
 }
+async function syncBoard(state){
+  if(!user || !state.lb || !state.lb.on || !state.wk) return;
+  const {error}=await sb.from('leaderboard').upsert({user_id:user.id,nickname:String(state.lb.name).slice(0,20),week:state.wk,xp:Math.min(20000,state.wkXp||0),updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  if(error) throw error;
+}
+window.MikroCloud={
+  ready:false,
+  user:()=>user,
+  displayName:()=>user?((user.user_metadata&&(user.user_metadata.display_name||user.user_metadata.full_name||user.user_metadata.name))||user.email.split('@')[0]):'',
+  login:()=>openAuth('login'),
+  report:async(qid,qtext,message)=>{ const {error}=await sb.from('question_reports').insert({question_id:qid,question_text:qtext,message}); if(error) throw error; },
+  board:async(week)=>{ const {data,error}=await sb.from('leaderboard').select('user_id,nickname,xp').eq('week',week).order('xp',{ascending:false}).limit(25); if(error) throw error; return data; },
+  syncBoard:syncBoard,
+  leaveBoard:async()=>{ if(!user) return; const {error}=await sb.from('leaderboard').delete().eq('user_id',user.id); if(error) throw error; }
+};
 // Save right away when the tab is hidden; reload if another device saved newer progress
 document.addEventListener('visibilitychange',async()=>{
   if(!user) return;
@@ -1607,20 +1778,33 @@ window.addEventListener('pagehide',()=>flush());
 // --- Account sheet ---
 $('acct').addEventListener('click',()=>{
   if(!user){ openAuth('login'); return; }
-  const ov=$('overlay'); const nm=(user.user_metadata&&user.user_metadata.display_name)||'';
+  const ov=$('overlay'); const nm=window.MikroCloud.displayName();
   ov.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="actitle"><div class="card pop">
     <div class="row"><div><div class="qtag">Account</div><h2 id="actitle">${esc(nm||user.email)}</h2></div><button class="x" id="acclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="26" height="26"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <p style="color:var(--muted);margin:10px 0 4px">${esc(user.email)}</p>
     <p id="syncTxt" style="font-weight:700;margin:4px 0 14px">${statusText()}</p>
-    <button class="btn ghost" id="aclogout">Log out</button></div></div>`;
+    <button class="btn ghost" id="aclogout">Log out</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap"><a href="privacy.html" style="color:var(--muted);font-weight:700;font-size:.85rem">Privacy</a><button class="link" id="acdel" style="color:var(--bad)">Delete account</button></div>
+    <div id="acdelbox" hidden><p style="color:var(--ink);font-weight:700;margin:10px 0 6px">This permanently deletes your account, your progress and your leaderboard entry. It can’t be undone.</p><p class="amsg" id="acdelmsg"></p><button class="btn danger" id="acdelyes">Yes, delete everything</button></div></div></div>`;
   const close=()=>ov.innerHTML='';
   ov.querySelector('.sheet').addEventListener('click',e=>{if(e.target.classList.contains('sheet'))close();});
   $('acclose').onclick=close;
+  $('acdel').onclick=()=>{ $('acdelbox').hidden=false; $('acdel').hidden=true; $('acdelyes').focus(); };
+  $('acdelyes').onclick=async()=>{
+    const b=$('acdelyes'); b.disabled=true; b.textContent='Deleting …';
+    clearTimeout(timer); pending=null;
+    const {error}=await sb.rpc('delete_my_account');
+    if(error){ $('acdelmsg').className='amsg err'; $('acdelmsg').textContent=/function|schema cache/i.test(error.message||'')?'Account deletion isn’t set up yet (run update-2.sql in Supabase).':niceError(error); b.disabled=false; b.textContent='Yes, delete everything'; return; }
+    try{ localStorage.removeItem(BASE+':'+user.id); }catch(e){}
+    user=null; try{ await sb.auth.signOut({scope:'local'}); }catch(e){}
+    location.replace(location.pathname);
+  };
   $('aclogout').onclick=async()=>{ $('aclogout').disabled=true; $('aclogout').textContent='Saving and logging out …'; await flush(); await sb.auth.signOut(); location.reload(); };
 });
 
 // --- Start: everyone gets the app right away; logging in is optional ---
 if(!configured || !window.supabase){ $('acct').hidden=true; startGuest(); return; }
+window.MikroCloud.ready=true;
 sb=window.supabase.createClient(CFG.supabaseUrl.replace(/\/$/,''),CFG.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let booted=false;
 sb.auth.onAuthStateChange((event,session)=>{
@@ -1634,6 +1818,18 @@ sb.auth.onAuthStateChange((event,session)=>{
   if(event==='SIGNED_IN' && guest && mode!=='reset'){ location.replace(location.pathname); return; } // just logged in: reload into the account
   if(event==='SIGNED_OUT' && user){ location.reload(); }
 });
+})();
+</script>
+<script>
+// Offline support and "Install app"
+if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+(function(){
+  let ev=null; const b=document.getElementById('installBtn');
+  window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); ev=e; b.hidden=false; });
+  b.onclick=async()=>{ if(!ev) return; ev.prompt(); try{ await ev.userChoice; }catch(e){} ev=null; b.hidden=true; };
+  window.addEventListener('appinstalled',()=>{ b.hidden=true; });
 })();
 </script>
 </body>

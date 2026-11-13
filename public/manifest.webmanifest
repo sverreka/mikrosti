@@ -1,0 +1,15 @@
+{
+  "name": "MikroSti SE-213",
+  "short_name": "MikroSti",
+  "description": "Practice SE-213 Microeconomics: lessons, exam practice and formulas.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5fa",
+  "theme_color": "#2f5bd8",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
