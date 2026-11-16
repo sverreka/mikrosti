@@ -73,8 +73,9 @@ sub,sup{line-height:0}
 .stat svg{width:22px;height:22px}
 .stat.streak{color:#f07a1a}.stat.xp{color:var(--gold)}.stat.mist{color:var(--bad)}
 
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 0 6px}
-@media (max-width:620px){.tabs{grid-template-columns:repeat(6,1fr)}.tabs .tab{grid-column:span 2}.tabs .tab:nth-child(n+4){grid-column:span 3}.tabs .tab{font-size:.84rem;padding:8px 4px}}
+.tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:14px 0 6px}
+.tabs .tab{font-size:.88rem;padding:9px 4px}
+@media (max-width:620px){.tabs{grid-template-columns:repeat(3,1fr)}.tabs .tab{font-size:.84rem;padding:8px 4px}}
 .tab{min-width:0;border:2px solid var(--line);background:var(--surface);color:var(--muted);border-radius:14px;padding:9px 10px;font-weight:800;font-size:.92rem;border-bottom-width:4px}
 .tab[aria-selected="true"]{color:var(--accent);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
 
@@ -272,6 +273,23 @@ body.show-auth .auth{display:flex}
 .lbjoin input{flex:1;min-width:0;font:inherit;font-weight:700;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
 .lbjoin .btn{width:auto;margin:0}
 .danger{background:var(--bad)!important;box-shadow:0 4px 0 color-mix(in srgb,var(--bad) 70%,#000)!important;color:#fff!important;border:none!important}
+.modebar{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:5px;margin:12px 0}
+.modebar button{border:none;background:none;border-radius:10px;padding:9px 6px;font-weight:800;font-size:.92rem;color:var(--muted)}
+.modebar button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.wverdict{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
+.wverdict .opt{justify-content:center;font-weight:800}
+.wtext{width:100%;min-height:170px;font:inherit;font-size:1rem;line-height:1.5;padding:12px 14px;border-radius:14px;border:2px solid var(--line);border-bottom-width:4px;background:var(--surface);color:var(--ink);resize:vertical}
+.wtip{color:var(--muted);font-size:.85rem;margin:6px 0 0}
+.wbox{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0}
+.wbox h3{font-size:1.05rem;margin-bottom:6px}
+.wbox p{margin:0}
+.wmine{white-space:pre-wrap;color:var(--ink)}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-weight:700;cursor:pointer}
+.ck:first-of-type{border-top:none}
+.ck input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--ok)}
+.wscore{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800}
+.wscore b{font-family:var(--display);font-size:1.6rem;color:var(--accent)}
+.wyear{display:inline-block;font-size:.72rem;font-weight:800;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--gold) 22%,transparent);color:color-mix(in srgb,var(--gold) 60%,var(--ink));margin-left:6px}
 .acct i.saving{background:var(--gold)}.acct i.err{background:var(--bad)}
 @media (max-width:400px){.stats{gap:9px}.brand small{display:none}}
 </style>
@@ -308,6 +326,7 @@ body.show-auth .auth{display:flex}
   </header>
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" id="tab-sti" aria-selected="true" data-view="sti">Learning path</button>
+    <button class="tab" role="tab" id="tab-theory" aria-selected="false" data-view="theory">Theory</button>
     <button class="tab" role="tab" id="tab-eksamen" aria-selected="false" data-view="eksamen">Exam practice</button>
     <button class="tab" role="tab" id="tab-feil" aria-selected="false" data-view="feil">Mistakes</button>
     <button class="tab" role="tab" id="tab-formler" aria-selected="false" data-view="formler">Formulas</button>
@@ -1161,6 +1180,8 @@ return G;
 <script src="questions-2.js"></script>
 <script src="questions-3.js"></script>
 <script src="questions-4.js"></script>
+<script src="questions-5.js"></script>
+<script src="written-qs.js"></script>
 <script src="gen-2.js"></script>
 <script src="gen-3.js"></script>
 <script>
@@ -1236,7 +1257,7 @@ function show(v){
   currentView=v;
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
   const el=document.getElementById('view');
-  ({sti:viewPath,eksamen:viewExam,feil:viewWrong,formler:viewFormulas,board:viewBoard})[v](el);
+  ({sti:viewPath,eksamen:viewExam,feil:viewWrong,formler:viewFormulas,board:viewBoard,theory:viewTheory})[v](el);
   if(location.hash.slice(1)!==v){try{history.replaceState(null,'','#'+v);}catch(e){}}
 }
 
@@ -1450,7 +1471,8 @@ function check(){
   save(); hud();
   // queue
   const item=L.queue.shift();
-  if(ok||L.mode==='exam') L.solved++;
+  if(L.mode==='theory'){ S.th=S.th||{}; const r=S.th[q.thid]=S.th[q.thid]||{c:0,w:0,s:0}; if(ok){r.c++;r.s++;} else {r.w++;r.s=0;} save(); }
+  if(ok||L.mode==='exam'||L.mode==='theory') L.solved++;
   else if(L.mode!=='exam') L.queue.push({q:item.q.make?item.q.make():item.q,retry:true});
   progress();
   const lf=document.getElementById('lf'); lf.className='lfoot '+(ok?'ok':'bad');
@@ -1479,7 +1501,16 @@ function finish(passed){
   L.cur=null;
   const acc=L.answered?Math.round(L.correctFirst/L.answered*100):0;
   let xp=0, h='';
-  if(L.mode==='exam'){
+  if(L.mode==='theory'){
+    xp=Math.min(20,4+L.correctFirst); addXp(xp);
+    const rows=Object.keys(L.perUnit).map(ui=>{const p=L.perUnit[ui];return `<div class="brow"><span>${UNITS[ui].title}</span><span style="text-align:right;font-variant-numeric:tabular-nums">${p.c}/${p.n}</span></div><div class="bar" style="height:8px;margin-bottom:6px"><i style="width:${p.c/p.n*100}%;background:${UNITS[ui].color}"></i></div>`;}).join('');
+    const wrongQs=L.qs.filter(q=>L.missed.has(q.id));
+    h=`<div class="result"><svg class="medal pop" viewBox="0 0 24 24" style="color:var(--accent)">${ICON.book.replace(/<\/?svg[^>]*>/g,'')}</svg><h2>${L.correctFirst} of ${L.total} correct</h2>
+      <div class="tiles"><div class="tile"><div class="h" style="background:var(--ok)">Correct</div><div class="v">${L.correctFirst}/${L.total}</div></div><div class="tile"><div class="h" style="background:var(--accent)">Accuracy</div><div class="v">${acc}%</div></div><div class="tile"><div class="h" style="background:var(--gold)">XP</div><div class="v">+${xp}</div></div></div>
+      <div class="breakdown">${rows}</div>
+      ${wrongQs.length?`<div class="panel" style="width:100%;text-align:left;margin:0"><h2 style="font-size:1.1rem">Review what you missed</h2>${wrongQs.map(q=>`<div style="border-top:1px solid var(--line);padding:10px 0"><p style="margin:0 0 4px;color:var(--ink);font-weight:700">${q.q}</p><p style="margin:0;color:var(--ok);font-weight:800">${q.t==='tf'?(q.a?'True':'False'):q.o[q.a]}</p><p style="margin:4px 0 0">${q.e}</p></div>`).join('')}</div>`:'<p style="color:var(--ok);margin:0;font-weight:800">Everything right. Well done!</p>'}
+      <button class="btn" id="rretry">New round</button><button class="btn ghost" id="rdone">Back to theory</button></div>`;
+  } else if(L.mode==='exam'){
     const pts=L.correctFirst*6;
     if(S.best==null||pts>S.best) S.best=pts;
     xp=10+L.correctFirst*2; addXp(xp);
@@ -1514,6 +1545,171 @@ function finish(passed){
   document.getElementById('rdone').onclick=()=>{document.getElementById('overlay').innerHTML='';L=null;show(currentView);};
   const r=document.getElementById('rretry'); if(r) r.onclick=()=>startLesson(cfg);
   document.getElementById('rdone').focus();
+}
+
+// ---------- Theory practice (concepts only, no calculations) ----------
+// Pool: true/false statements and conceptual multiple-choice questions from every unit, plus the theory questions in GEN.
+const TH_EXTRA=new Set(["u1-6","u1-16","u1-20","u2-20","u2-26","u3-14","u5-1","u7-5","u7-21","u10-11","u10-25","u11-8","u12-18","u12-30"]);
+function isTheory(q){
+  if(TH_EXTRA.has(q.id)) return true;
+  if(q.t==='tf') return true;
+  if(q.t!=='mc') return false;
+  const opts=q.o.map(o=>String(o).replace(/<[^>]+>/g,''));
+  if(opts.filter(o=>/\d/.test(o)).length>=2) return false;
+  if(/=.*[a-zA-Z]/.test(opts.join(' ')) && /\d/.test(q.q.replace(/<[^>]+>/g,''))) return false;
+  return true;
+}
+let THEORY=null;
+function theoryPool(){
+  if(THEORY) return THEORY;
+  THEORY=[];
+  ALL.forEach(q=>{ if(isTheory(q)){ q.thid=q.id; THEORY.push(q); } });
+  UNITS.forEach((u,ui)=>(GEN[u.id]||[]).forEach((fn,k)=>{ if(fn.fixed){ const q=fn(); q.unit=ui; q.id=u.id+'-t'+k; q.thid=q.id; q.gen=true; THEORY.push(q); } }));
+  return THEORY;
+}
+let theoryCfg={units:null,n:10,focus:'mix'};
+function thStat(q){ return (S.th&&S.th[q.thid])||null; }
+function theorySet(cfg){
+  const pool=theoryPool().filter(q=>cfg.units.has(q.unit));
+  const score=q=>{ const r=thStat(q); const rnd=Math.random();
+    if(cfg.focus==='weak'){ if(!r) return 2+rnd; return (r.w>0&&r.s<2?0:3)+rnd; }   // missed and not yet re-learned first
+    if(!r) return rnd;                       // mix: unseen first, then the least mastered
+    return 1+Math.min(r.s,3)+rnd; };
+  return pool.slice().sort((a,b)=>score(a)-score(b)).slice(0,cfg.n);
+}
+let theoryMode='quiz';
+function modeBar(){ return `<div class="modebar" role="tablist" aria-label="Theory mode"><button role="tab" aria-pressed="${theoryMode==='quiz'}" data-mode="quiz">Quick quiz</button><button role="tab" aria-pressed="${theoryMode==='written'}" data-mode="written">Written answers</button></div>`; }
+function bindModeBar(el){ el.querySelectorAll('.modebar button').forEach(b=>b.onclick=()=>{ theoryMode=b.dataset.mode; show('theory'); }); }
+function viewTheory(el){
+  if(theoryMode==='written') return viewWritten(el);
+  const pool=theoryPool();
+  if(!theoryCfg.units) theoryCfg.units=new Set(UNITS.map((_,i)=>i));
+  const per=UNITS.map((u,ui)=>{ const qs=pool.filter(q=>q.unit===ui); const known=qs.filter(q=>{const r=thStat(q);return r&&r.s>=1;}).length; return {u,ui,n:qs.length,known}; });
+  const tot=pool.length, known=per.reduce((t,p)=>t+p.known,0);
+  const answered=Object.values(S.th||{}).reduce((t,r)=>t+r.c+r.w,0), right=Object.values(S.th||{}).reduce((t,r)=>t+r.c,0);
+  const weak=pool.filter(q=>{const r=thStat(q);return r&&r.w>0&&r.s<2;}).length;
+  el.innerHTML=modeBar()+`<div class="panel"><h2>Theory practice</h2>
+    <p>Concept questions only: multiple choice and true/false, no calculations and no hearts. Each answer comes with an explanation. Separate from the learning path.</p>
+    <p style="margin-top:12px;color:var(--ink);font-weight:700">Topics <button class="link" id="thAll">All</button><button class="link" id="thNone">None</button></p>
+    <div class="chips">${UNITS.map((u,i)=>`<button class="chip" aria-pressed="${theoryCfg.units.has(i)}" data-u="${i}">${u.title}</button>`).join('')}</div>
+    <p style="margin-top:14px;color:var(--ink);font-weight:700">Number of questions</p>
+    <div class="chips" id="thN">${[10,20,40].map(n=>`<button class="chip" aria-pressed="${theoryCfg.n===n}" data-n="${n}">${n}</button>`).join('')}</div>
+    <p style="margin-top:14px;color:var(--ink);font-weight:700">Which questions</p>
+    <div class="chips" id="thF"><button class="chip" aria-pressed="${theoryCfg.focus==='mix'}" data-f="mix">New and least known first</button><button class="chip" aria-pressed="${theoryCfg.focus==='weak'}" data-f="weak">Ones I got wrong (${weak})</button></div>
+    <p class="amsg err" id="thMsg"></p>
+    <button class="btn" id="thGo">Start</button></div>
+    <div class="panel"><h2>Your theory progress</h2>
+    <p>${known} of ${tot} concepts answered correctly last time${answered?` · ${answered} answers in total, ${Math.round(right/answered*100)} % right`:''}.</p>
+    <div class="breakdown" style="margin-top:12px">${per.map(p=>`<div class="brow"><span>${p.u.title}</span><span style="text-align:right;color:var(--muted);font-variant-numeric:tabular-nums">${p.known}/${p.n}</span></div><div class="bar" style="height:8px;margin-bottom:6px"><i style="width:${p.n?p.known/p.n*100:0}%;background:${p.u.color}"></i></div>`).join('')}</div></div>`;
+  bindModeBar(el);
+  const redraw=()=>show('theory');
+  el.querySelectorAll('.chip[data-u]').forEach(c=>c.onclick=()=>{const i=+c.dataset.u;theoryCfg.units.has(i)?theoryCfg.units.delete(i):theoryCfg.units.add(i);c.setAttribute('aria-pressed',theoryCfg.units.has(i));});
+  el.querySelector('#thAll').onclick=()=>{theoryCfg.units=new Set(UNITS.map((_,i)=>i));redraw();};
+  el.querySelector('#thNone').onclick=()=>{theoryCfg.units=new Set();redraw();};
+  el.querySelectorAll('.chip[data-n]').forEach(c=>c.onclick=()=>{theoryCfg.n=+c.dataset.n;el.querySelectorAll('.chip[data-n]').forEach(x=>x.setAttribute('aria-pressed',x===c));});
+  el.querySelectorAll('.chip[data-f]').forEach(c=>c.onclick=()=>{theoryCfg.focus=c.dataset.f;el.querySelectorAll('.chip[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===c));});
+  el.querySelector('#thGo').onclick=()=>{
+    const msg=el.querySelector('#thMsg');
+    if(!theoryCfg.units.size){ msg.textContent='Choose at least one topic.'; return; }
+    const cfg={units:new Set(theoryCfg.units),n:theoryCfg.n,focus:theoryCfg.focus};
+    const qs=theorySet(cfg);
+    if(cfg.focus==='weak' && !qs.some(q=>{const r=thStat(q);return r&&r.w>0&&r.s<2;})){ msg.textContent='No missed questions in these topics. Try “New and least known first”.'; return; }
+    startLesson({title:'Theory practice',build:()=>theorySet(cfg),mode:'theory',color:'var(--accent)'});
+  };
+}
+
+// ---------- Written answers (exam Problem 2) ----------
+const WR=(window.WRITTEN||[]);
+let WS=null, wCfg={src:'real',n:5};
+function wStat(w){ return (S.wr&&S.wr[w.id])||null; }
+function wScore(verdictOk,hasText,checked,total){ if(!verdictOk) return 0; if(!hasText) return 2; return Math.round(2+8*checked/total); }
+function viewWritten(el){
+  const real=WR.filter(w=>w.year), style=WR.filter(w=>!w.year);
+  const done=WR.filter(wStat), avg=done.length?done.reduce((t,w)=>t+wStat(w).last,0)/done.length:0;
+  const years=[...new Set(real.map(w=>w.year))].sort();
+  el.innerHTML=modeBar()+`<div class="panel"><h2>Written answers</h2>
+    <p>Practice exam Problem 2: “Is the statement correct? Justify your answer.” Write your answer first, then compare it with a model answer and tick off what you covered. You get an estimated score out of 10, graded like the SE-213 answer keys: a correct verdict without justification gives 2 points, and full points need careful reasoning with a relevant example or counterexample.</p>
+    <p style="margin-top:12px;color:var(--ink);font-weight:700">Statements</p>
+    <div class="chips" id="wSrc"><button class="chip" aria-pressed="${wCfg.src==='real'}" data-s="real">Real exam statements (${real.length})</button><button class="chip" aria-pressed="${wCfg.src==='style'}" data-s="style">Exam-style (${style.length})</button><button class="chip" aria-pressed="${wCfg.src==='all'}" data-s="all">All (${WR.length})</button></div>
+    <p style="margin-top:14px;color:var(--ink);font-weight:700">How many</p>
+    <div class="chips" id="wN">${[1,3,5,10].map(n=>`<button class="chip" aria-pressed="${wCfg.n===n}" data-n="${n}">${n}</button>`).join('')}</div>
+    <p class="hint">Statements you haven’t done come first, then the ones with your lowest scores.</p>
+    <button class="btn" id="wGo">Start</button></div>
+    <div class="panel"><h2>Your written practice</h2>
+    <p>${done.length?`${done.length} of ${WR.length} statements practiced. Average of your latest scores: <b>${avg.toFixed(1)}/10</b>.`:'No statements practiced yet.'}</p>
+    <div class="breakdown" style="margin-top:12px">${years.map(y=>{const ws=real.filter(w=>w.year===y),d=ws.filter(wStat),a=d.length?d.reduce((t,w)=>t+wStat(w).last,0)/d.length:0;return `<div class="brow"><span>Fall ${y} exam</span><span style="text-align:right;color:var(--muted);font-variant-numeric:tabular-nums">${d.length?a.toFixed(1)+'/10':'–'}</span></div><div class="bar" style="height:8px;margin-bottom:6px"><i style="width:${a*10}%;background:var(--accent)"></i></div>`;}).join('')}</div></div>`;
+  bindModeBar(el);
+  el.querySelectorAll('#wSrc .chip').forEach(c=>c.onclick=()=>{wCfg.src=c.dataset.s;el.querySelectorAll('#wSrc .chip').forEach(x=>x.setAttribute('aria-pressed',x===c));});
+  el.querySelectorAll('#wN .chip').forEach(c=>c.onclick=()=>{wCfg.n=+c.dataset.n;el.querySelectorAll('#wN .chip').forEach(x=>x.setAttribute('aria-pressed',x===c));});
+  el.querySelector('#wGo').onclick=()=>startWritten({...wCfg});
+}
+function startWritten(cfg){
+  const pool=WR.filter(w=>cfg.src==='all'||(cfg.src==='real'?w.year:!w.year));
+  const key=w=>{const r=wStat(w);return (r?1+r.last/10:0)+Math.random()*0.5;};
+  WS={cfg,list:pool.slice().sort((a,b)=>key(a)-key(b)).slice(0,cfg.n),i:0,scores:[]};
+  const ov=document.getElementById('overlay');
+  ov.innerHTML=`<div class="lesson" role="dialog" aria-modal="true" aria-label="Written answers">
+    <div class="lhead"><button class="x" id="wx" aria-label="Quit">${ICON.x}</button><div class="bar"><i id="wprog" style="width:0"></i></div><div class="hearts" style="color:var(--muted)"><span id="wcount"></span></div></div>
+    <div class="lbody"><div class="qwrap" id="ww"></div></div>
+    <div class="lfoot" id="wf"><div class="in" id="wfi"></div></div></div>`;
+  document.getElementById('wx').onclick=()=>{ov.innerHTML='';WS=null;show('theory');};
+  writtenAsk();
+}
+function writtenAsk(){
+  const w=WS.list[WS.i]; WS.verdict=null;
+  document.getElementById('wprog').style.width=(WS.i/WS.list.length*100)+'%';
+  document.getElementById('wcount').textContent=(WS.i+1)+'/'+WS.list.length;
+  const u=UNITS[w.u];
+  const ww=document.getElementById('ww');
+  ww.innerHTML=`<div class="qtag" style="color:${u.color}">${u.title}${w.year?`<span class="wyear">Fall ${w.year} exam</span>`:''}</div>
+    <p class="qtext"><span style="color:var(--muted);font-weight:800">Statement:</span> ${w.s}</p>
+    <p style="font-weight:800;margin:0 0 8px">Is the statement correct?</p>
+    <div class="wverdict" role="group" aria-label="Verdict"><button class="opt" data-v="1">Correct</button><button class="opt" data-v="0">Not correct</button></div>
+    <label for="wtext" style="font-weight:800;display:block;margin-bottom:6px">Your justification</label>
+    <textarea id="wtext" class="wtext" placeholder="Explain the concepts, show the mechanism (a formula or a diagram in words), and give an example or counterexample."></textarea>
+    <p class="wtip">Tip: write it as you would on the exam. Aim for 5–10 sentences.</p>`;
+  ww.classList.remove('pop'); void ww.offsetWidth; ww.classList.add('pop');
+  document.getElementById('ww').parentElement.scrollTop=0;
+  ww.querySelectorAll('.wverdict .opt').forEach(b=>b.onclick=()=>{ ww.querySelectorAll('.wverdict .opt').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); WS.verdict=b.dataset.v==='1'; foot(); });
+  const wf=document.getElementById('wf'); wf.className='lfoot';
+  const foot=()=>{ document.getElementById('wfi').innerHTML=`<button class="btn" id="wcheck" ${WS.verdict===null?'disabled':''}>Check my answer</button>`; document.getElementById('wcheck').onclick=writtenReveal; };
+  foot();
+}
+function writtenReveal(){
+  const w=WS.list[WS.i], text=document.getElementById('wtext').value.trim(), ok=WS.verdict===w.a, has=text.length>=15;
+  const ww=document.getElementById('ww'), u=UNITS[w.u];
+  ww.innerHTML=`<div class="qtag" style="color:${u.color}">${u.title}${w.year?`<span class="wyear">Fall ${w.year} exam</span>`:''}</div>
+    <p class="qtext" style="margin-bottom:12px"><span style="color:var(--muted);font-weight:800">Statement:</span> ${w.s}</p>
+    <div class="wbox" style="border-color:${ok?'var(--ok)':'var(--bad)'};background:${ok?'var(--ok-bg)':'var(--bad-bg)'}"><h3 style="color:${ok?'var(--ok)':'var(--bad)'}">${ok?'Right verdict':'Wrong verdict'}: the statement is ${w.a?'correct':'not correct'}.</h3><p>${ok?'':'With a wrong verdict the answer keys give 0 points, however good the rest is. Read the model answer to see why.'}</p></div>
+    ${has?`<div class="wbox"><h3>Your answer</h3><p class="wmine">${esc(text)}</p></div>`:''}
+    <div class="wbox"><h3>Model answer</h3><p>${w.m}</p></div>
+    ${ok&&has?`<div class="wbox"><h3>What did your answer cover?</h3><p class="hint" style="margin:0 0 6px">Be honest: tick a point only if your answer actually says it.</p>${w.k.map((k,i)=>`<label class="ck"><input type="checkbox" data-k="${i}"><span>${k}</span></label>`).join('')}</div>`:''}
+    <div class="wbox wscore"><span>Estimated score</span><b id="wsc"></b></div>
+    ${ok&&!has?'<p class="hint">You picked the right verdict but wrote no justification. On the exam that gives 2 of 10 points.</p>':''}`;
+  document.getElementById('ww').parentElement.scrollTop=0;
+  const calc=()=>{ const c=ww.querySelectorAll('.ck input:checked').length; const sc=wScore(ok,has,c,w.k.length); document.getElementById('wsc').textContent=sc+'/10'; return sc; };
+  ww.querySelectorAll('.ck input').forEach(i=>i.onchange=calc); calc();
+  const last=WS.i===WS.list.length-1;
+  document.getElementById('wf').className='lfoot '+(ok?'ok':'bad');
+  document.getElementById('wfi').innerHTML=`<button class="btn" id="wnext">${last?'See results':'Next statement'}</button>`;
+  document.getElementById('wnext').onclick=()=>{
+    const sc=calc(); WS.scores.push(sc);
+    S.wr=S.wr||{}; const r=S.wr[w.id]||{best:0,n:0}; S.wr[w.id]={last:sc,best:Math.max(r.best,sc),n:r.n+1}; save();
+    if(sc>=8) addXp(5); else if(sc>=2) addXp(2);
+    WS.i++; if(WS.i<WS.list.length) writtenAsk(); else writtenDone();
+  };
+}
+function writtenDone(){
+  const tot=WS.scores.reduce((a,b)=>a+b,0), max=WS.list.length*10;
+  document.getElementById('wprog').style.width='100%';
+  document.getElementById('wf').style.display='none';
+  document.querySelector('#overlay .lbody').innerHTML=`<div class="result"><svg class="medal pop" viewBox="0 0 24 24" style="color:var(--accent)">${ICON.book.replace(/<\/?svg[^>]*>/g,'')}</svg><h2>${tot} of ${max} points</h2>
+    <p style="color:var(--muted);margin:0">${tot/max>=0.8?'Exam-ready answers. Great work!':tot/max>=0.5?'Good. Look at the model answers for the points you missed.':'Keep practicing: name the concept, show the mechanism, give an example.'}</p>
+    <div class="breakdown">${WS.list.map((w,i)=>`<div class="brow" style="grid-template-columns:1fr 60px"><span>${w.s.replace(/<[^>]+>/g,'').slice(0,90)}${w.s.length>90?'…':''}</span><span style="text-align:right;font-variant-numeric:tabular-nums">${WS.scores[i]}/10</span></div>`).join('')}</div>
+    <button class="btn" id="wagain">New round</button><button class="btn ghost" id="wdone">Back to theory</button></div>`;
+  const cfg=WS.cfg;
+  document.getElementById('wagain').onclick=()=>startWritten(cfg);
+  document.getElementById('wdone').onclick=()=>{document.getElementById('overlay').innerHTML='';WS=null;show('theory');};
 }
 
 // ---------- Exam countdown ----------
@@ -1608,7 +1804,7 @@ async function viewBoard(el){
 // Keyboard: 1–4 selects, Enter checks/continues
 document.addEventListener('keydown',e=>{
   if(document.getElementById('modal').innerHTML || document.body.classList.contains('show-auth')) return;
-  if(!L) { if(e.key==='Escape') document.getElementById('overlay').innerHTML=''; return; }
+  if(!L) { if(e.key==='Escape' && !WS) document.getElementById('overlay').innerHTML=''; return; }
   if(e.key==='Escape'){document.getElementById('lx')?.click();return;}
   if(L.state==='ask' && /^[1-4]$/.test(e.key) && document.activeElement?.id!=='numA'){document.getElementById('o'+(+e.key-1))?.click();}
   if(e.key==='Enter'){e.preventDefault();
@@ -1619,8 +1815,8 @@ document.addEventListener('keydown',e=>{
 
 hud(); save();
 const h0=location.hash.slice(1);
-show(['sti','eksamen','feil','formler','board'].includes(h0)?h0:'sti');
-window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h!==currentView&&['sti','eksamen','feil','formler','board'].includes(h))show(h);});
+show(['sti','theory','eksamen','feil','formler','board'].includes(h0)?h0:'sti');
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h!==currentView&&['sti','theory','eksamen','feil','formler','board'].includes(h))show(h);});
 };
 </script>
 <script>
