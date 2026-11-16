@@ -2,8 +2,8 @@
 // Pages: network first (so updates show up right away), cached copy when offline.
 // Fonts, icons and the login library: cached after the first visit.
 // Supabase requests are never cached.
-const CACHE = 'mikrosti-v6';
-const SHELL = ['./', './index.html', './privacy.html', './icon.svg', './icon-192.png', './coffee.svg', './manifest.webmanifest', './questions-2.js', './questions-3.js', './gen-2.js', './questions-4.js', './gen-3.js', './questions-5.js', './written-qs.js'];
+const CACHE = 'mikrosti-v7';
+const SHELL = ['./', './index.html', './privacy.html', './icon.svg', './icon-192.png', './coffee.svg', './manifest.webmanifest', './questions-2.js', './questions-3.js', './gen-2.js', './questions-4.js', './gen-3.js', './questions-5.js', './written-qs.js', './gen-4.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

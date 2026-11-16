@@ -290,6 +290,10 @@ body.show-auth .auth{display:flex}
 .wscore{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800}
 .wscore b{font-family:var(--display);font-size:1.6rem;color:var(--accent)}
 .wyear{display:inline-block;font-size:.72rem;font-weight:800;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--gold) 22%,transparent);color:color-mix(in srgb,var(--gold) 60%,var(--ink));margin-left:6px}
+.footrow{display:flex;gap:10px}
+.footrow .btn{flex:1}
+.btn.skip{flex:none;width:auto;padding:14px 18px;background:var(--surface);color:var(--muted);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn.skip:active{box-shadow:0 1px 0 var(--line)}
 .acct i.saving{background:var(--gold)}.acct i.err{background:var(--bad)}
 @media (max-width:400px){.stats{gap:9px}.brand small{display:none}}
 </style>
@@ -1184,6 +1188,7 @@ return G;
 <script src="written-qs.js"></script>
 <script src="gen-2.js"></script>
 <script src="gen-3.js"></script>
+<script src="gen-4.js"></script>
 <script>
 // Add the extra questions to the end of each unit (existing question ids and progress stay the same)
 (function(){ const M=window.MORE_QS||{}; UNITS.forEach(u=>(M[u.id]||[]).forEach(q=>u.qs.push(q))); })();
@@ -1268,6 +1273,10 @@ function lvl(key){ S.lvl=S.lvl||{}; return S.lvl[key]!=null?S.lvl[key]:(S.done[k
 function unlocked(ui,li){ return li===0 || lvl(lessonKey(ui,li-1))>=1; }
 function bossOpen(ui){ return UNITS[ui].lessons.every((_,li)=>lvl(lessonKey(ui,li))>=1); }
 // Draw a new lesson from the bank: fixed questions (least seen first) + generated questions with new numbers
+// Generators are drawn from a shuffled bag per unit that lasts across lessons, so the same kind of
+// calculation doesn't come up twice in a row.
+const GENBAG={};
+function nextGen(uid,gens){ let b=GENBAG[uid]; if(!b||!b.length){ b=GENBAG[uid]=shuffle(gens); } return b.pop(); }
 function lessonSet(ui,li){
   const u=UNITS[ui], key=lessonKey(ui,li), lv=lvl(key);
   S.seen=S.seen||{}; S.lastSet=S.lastSet||{};
@@ -1280,10 +1289,15 @@ function lessonSet(ui,li){
   pool=shuffle(pool).sort((x,y)=>((last.has(x.id)?100:0)+(S.seen[x.id]||0))-((last.has(y.id)?100:0)+(S.seen[y.id]||0)));
   const fixedPick=pool.slice(0,Math.max(0,n-nGen));
   nGen=n-fixedPick.length;
-  const genPick=[];let gs=shuffle(gens);while(genPick.length<nGen&&gens.length){if(!gs.length)gs=shuffle(gens);genPick.push(makeQ(ui,gs.pop()));}
-  fixedPick.forEach(q=>S.seen[q.id]=(S.seen[q.id]||0)+1);
-  S.lastSet[key]=fixedPick.map(q=>q.id); save();
-  return lv===0?fixedPick:shuffle(fixedPick.concat(genPick));
+  // Calculation questions the student has already seen come back with new numbers:
+  // seen once ⇒ 75 % chance of a fresh generated question instead, seen twice or more ⇒ always.
+  const keep=[];let swap=0;
+  fixedPick.forEach(q=>{ const sn=S.seen[q.id]||0; if(q.t==='num'&&gens.length&&(sn>=2||(sn===1&&Math.random()<0.75))) swap++; else keep.push(q); });
+  nGen+=swap;
+  const genPick=[];while(genPick.length<nGen&&gens.length) genPick.push(makeQ(ui,nextGen(u.id,gens)));
+  keep.forEach(q=>S.seen[q.id]=(S.seen[q.id]||0)+1);
+  S.lastSet[key]=keep.map(q=>q.id); save();
+  return lv===0&&!genPick.length?keep:shuffle(keep.concat(genPick));
 }
 function startLessonFor(ui,li){
   const u=UNITS[ui], key=lessonKey(ui,li), lv=lvl(key);
@@ -1382,7 +1396,7 @@ function viewExam(el){
     if(!pool.length) return;
     const sel=new Set(examSel);startLesson({title:'Practice exam',build:()=>examSet(sel),mode:'exam',color:'var(--accent)'});
   };
-  document.getElementById('exOnly').onclick=()=>startLesson({title:'Exam questions',qs:shuffle(ALL.filter(q=>q.ex)).slice(0,12),mode:'lesson',color:'var(--gold)'});
+  document.getElementById('exOnly').onclick=()=>startLesson({title:'Exam questions',qs:shuffle(ALL.filter(q=>q.ex)).slice(0,12),mode:'lesson',exOnly:true,color:'var(--gold)'});
 }
 
 function viewWrong(el){
@@ -1442,8 +1456,40 @@ function progress(){
 }
 function footAsk(){
   const lf=document.getElementById('lf'); lf.className='lfoot';
-  document.getElementById('lfi').innerHTML=`<button class="btn" id="chk" ${L.sel==null?'disabled':''}>Check</button>`;
+  const canSkip=!cur().retry && !!skipCandidate();
+  document.getElementById('lfi').innerHTML=`<div class="footrow">${canSkip?'<button class="btn skip" id="skp" title="Replace this question with another one">Skip</button>':''}<button class="btn" id="chk" ${L.sel==null?'disabled':''}>Check</button></div>`;
   document.getElementById('chk').onclick=check;
+  const sk=document.getElementById('skp'); if(sk) sk.onclick=skipQ;
+}
+// ---------- Skip: replace the current question with another one from the same pool ----------
+// Skipped questions are remembered as "known" and shown less often later.
+function skipPool(q){
+  if(L.mode==='theory') return theoryPool().filter(x=>!L.units||L.units.has(x.unit));
+  if(L.mode==='review') return ALL.filter(x=>S.wrong[x.id]);
+  if(L.exOnly) return ALL.filter(x=>x.ex);
+  return UNITS[q.unit].qs;                       // lessons, mastery tests and the practice exam: same unit
+}
+function skipCandidate(){
+  const q=cur().q, used=new Set(L.qs.map(x=>x.id).concat(L.queue.map(x=>x.q.id), L.skipped||[]));
+  S.seen=S.seen||{};
+  const rank=x=>{ if(L.mode==='theory'){ const r=thStat(x); return r?(r.k?5:1+Math.min(r.s,3)):0; } return (S.seen[x.id]||0); };
+  const pool=skipPool(q).filter(x=>!used.has(x.id) && x.id!==q.id && x.t!==undefined);
+  if(pool.length){ pool.sort((a,b)=>rank(a)-rank(b)+(Math.random()-.5)*.5); return pool[0]; }
+  if(L.mode!=='theory' && L.mode!=='review' && !L.exOnly){   // nothing left: a generated question with new numbers
+    const gens=(GEN[UNITS[q.unit].id]||[]).filter(f=>!f.fixed); if(gens.length) return makeQ(q.unit,gens[Math.floor(Math.random()*gens.length)]);
+  }
+  return null;
+}
+function skipQ(){
+  if(L.state!=='ask') return;
+  const old=cur().q, nq=skipCandidate(); if(!nq) return;
+  L.skipped=(L.skipped||[]).concat(old.id);
+  if(L.mode==='theory'){ S.th=S.th||{}; const r=S.th[old.thid]=S.th[old.thid]||{c:0,w:0,s:0}; r.k=1; }
+  else if(!old.gen){ S.seen=S.seen||{}; S.seen[old.id]=(S.seen[old.id]||0)+3; }
+  save();
+  L.queue[0]={q:nq,retry:false};
+  const i=L.qs.indexOf(old); if(i>=0) L.qs[i]=nq; else L.qs.push(nq);
+  renderQ();
 }
 function parseNum(s){s=s.replace(/\s/g,'').replace(/−/g,'-');if(/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(s))s=s.replace(/,/g,'');else s=s.replace(',','.');return parseFloat(s);}
 function check(){
@@ -1471,7 +1517,7 @@ function check(){
   save(); hud();
   // queue
   const item=L.queue.shift();
-  if(L.mode==='theory'){ S.th=S.th||{}; const r=S.th[q.thid]=S.th[q.thid]||{c:0,w:0,s:0}; if(ok){r.c++;r.s++;} else {r.w++;r.s=0;} save(); }
+  if(L.mode==='theory'){ S.th=S.th||{}; const r=S.th[q.thid]=S.th[q.thid]||{c:0,w:0,s:0}; if(ok){r.c++;r.s++;} else {r.w++;r.s=0;r.k=0;} save(); }
   if(ok||L.mode==='exam'||L.mode==='theory') L.solved++;
   else if(L.mode!=='exam') L.queue.push({q:item.q.make?item.q.make():item.q,retry:true});
   progress();
@@ -1574,6 +1620,7 @@ function theorySet(cfg){
   const score=q=>{ const r=thStat(q); const rnd=Math.random();
     if(cfg.focus==='weak'){ if(!r) return 2+rnd; return (r.w>0&&r.s<2?0:3)+rnd; }   // missed and not yet re-learned first
     if(!r) return rnd;                       // mix: unseen first, then the least mastered
+    if(r.k) return 5+rnd;                    // skipped as “I know this”: last
     return 1+Math.min(r.s,3)+rnd; };
   return pool.slice().sort((a,b)=>score(a)-score(b)).slice(0,cfg.n);
 }
@@ -1614,7 +1661,7 @@ function viewTheory(el){
     const cfg={units:new Set(theoryCfg.units),n:theoryCfg.n,focus:theoryCfg.focus};
     const qs=theorySet(cfg);
     if(cfg.focus==='weak' && !qs.some(q=>{const r=thStat(q);return r&&r.w>0&&r.s<2;})){ msg.textContent='No missed questions in these topics. Try “New and least known first”.'; return; }
-    startLesson({title:'Theory practice',build:()=>theorySet(cfg),mode:'theory',color:'var(--accent)'});
+    startLesson({title:'Theory practice',build:()=>theorySet(cfg),mode:'theory',units:cfg.units,color:'var(--accent)'});
   };
 }
 
@@ -1645,8 +1692,9 @@ function viewWritten(el){
 }
 function startWritten(cfg){
   const pool=WR.filter(w=>cfg.src==='all'||(cfg.src==='real'?w.year:!w.year));
-  const key=w=>{const r=wStat(w);return (r?1+r.last/10:0)+Math.random()*0.5;};
-  WS={cfg,list:pool.slice().sort((a,b)=>key(a)-key(b)).slice(0,cfg.n),i:0,scores:[]};
+  const key=w=>{const r=wStat(w);return (S.wrs&&S.wrs[w.id]?3:0)+(r?1+r.last/10:0)+Math.random()*0.5;};
+  const sorted=pool.slice().sort((a,b)=>key(a)-key(b));
+  WS={cfg,list:sorted.slice(0,cfg.n),spare:sorted.slice(cfg.n),i:0,scores:[]};
   const ov=document.getElementById('overlay');
   ov.innerHTML=`<div class="lesson" role="dialog" aria-modal="true" aria-label="Written answers">
     <div class="lhead"><button class="x" id="wx" aria-label="Quit">${ICON.x}</button><div class="bar"><i id="wprog" style="width:0"></i></div><div class="hearts" style="color:var(--muted)"><span id="wcount"></span></div></div>
@@ -1672,7 +1720,8 @@ function writtenAsk(){
   document.getElementById('ww').parentElement.scrollTop=0;
   ww.querySelectorAll('.wverdict .opt').forEach(b=>b.onclick=()=>{ ww.querySelectorAll('.wverdict .opt').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); WS.verdict=b.dataset.v==='1'; foot(); });
   const wf=document.getElementById('wf'); wf.className='lfoot';
-  const foot=()=>{ document.getElementById('wfi').innerHTML=`<button class="btn" id="wcheck" ${WS.verdict===null?'disabled':''}>Check my answer</button>`; document.getElementById('wcheck').onclick=writtenReveal; };
+  const foot=()=>{ document.getElementById('wfi').innerHTML=`<div class="footrow">${WS.spare.length?'<button class="btn skip" id="wskip" title="Replace this statement with another one">Skip</button>':''}<button class="btn" id="wcheck" ${WS.verdict===null?'disabled':''}>Check my answer</button></div>`; document.getElementById('wcheck').onclick=writtenReveal;
+    const sk=document.getElementById('wskip'); if(sk) sk.onclick=()=>{ S.wrs=S.wrs||{}; S.wrs[w.id]=1; save(); WS.list[WS.i]=WS.spare.shift(); writtenAsk(); }; };
   foot();
 }
 function writtenReveal(){
@@ -1694,7 +1743,7 @@ function writtenReveal(){
   document.getElementById('wfi').innerHTML=`<button class="btn" id="wnext">${last?'See results':'Next statement'}</button>`;
   document.getElementById('wnext').onclick=()=>{
     const sc=calc(); WS.scores.push(sc);
-    S.wr=S.wr||{}; const r=S.wr[w.id]||{best:0,n:0}; S.wr[w.id]={last:sc,best:Math.max(r.best,sc),n:r.n+1}; save();
+    S.wr=S.wr||{}; if(S.wrs) delete S.wrs[w.id]; const r=S.wr[w.id]||{best:0,n:0}; S.wr[w.id]={last:sc,best:Math.max(r.best,sc),n:r.n+1}; save();
     if(sc>=8) addXp(5); else if(sc>=2) addXp(2);
     WS.i++; if(WS.i<WS.list.length) writtenAsk(); else writtenDone();
   };

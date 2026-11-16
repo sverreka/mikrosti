@@ -111,3 +111,12 @@ In Supabase, open **Table Editor → question_reports**. Each row has the questi
 - The Theory tab now has two modes: **Quick quiz** and **Written answers**.
 - Written answers: the student sees a Problem 2 statement, chooses "Correct" or "Not correct", writes a justification, then sees a model answer and a checklist of what the examiner looks for. The estimated score follows the answer keys: wrong verdict 0, right verdict without justification 2, otherwise 2 + 8 × the share of the checklist covered.
 - `public/written-qs.js`: 38 statements with model answers and checklists. 16 are the real Problem 2 statements from fall 2021–2024, based on the answer keys; 22 are exam-style statements covering all units. Add fall 2025 the same way.
+
+## Update 7: Skip button
+- A **Skip** button next to Check replaces the current question with another one from the same pool: the same unit in lessons, mastery tests and the practice exam; other past-exam questions in "Exam questions only"; other mistakes in the mistake bank; the chosen topics in the theory quiz; and the same statement set in written answers.
+- Skipped questions are remembered as "I know this" and come up less often later. Skip is hidden on "Try again" questions and once the answer has been checked.
+
+## Update 8: New numbers instead of repeats
+- `public/gen-4.js` adds 47 calculation generators (about 120 in total), covering the common exam calculations in every unit.
+- Lessons: a calculation question the student has already seen is swapped for a generated one with new numbers (75 % of the time after one viewing, always after two). The first time through, students still get the curated questions, including the real exam ones.
+- Generators are drawn from a shuffled bag per unit that lasts across lessons, so the same type of calculation doesn't come up twice in a row.
